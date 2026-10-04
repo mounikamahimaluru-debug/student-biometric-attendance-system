@@ -1,0 +1,79 @@
+[
+  {
+    "id": 1,
+    "name": "Hema Latha",
+    "roll": "IOT35079",
+    "college": "PBR VITS College of Engineering",
+    "year": "3rd Year",
+    "branch": "CSE-IOT",
+    "section": "5G",
+    "dob": "19-12-2005",
+    "credentialId": "/5w/mX0C/6BQluZrT8IrbQ=="
+  },
+  {
+    "id": 2,
+    "name": "Brahmaiah",
+    "roll": "IOT35035",
+    "college": "PBR VITS College of Engineering",
+    "year": "3rd Year",
+    "branch": "CSE-IOT",
+    "section": "5G",
+    "dob": "26-01-2006",
+    "credentialId": "KWLrTSgXV2sT9Vy9zpX1Pw=="
+  },
+  {
+    "id": 3,
+    "name": "Sravan",
+    "roll": "IOT35087",
+    "college": "PBR VITS College of Engineering",
+    "year": "3rd Year",
+    "branch": "CSE-IOT",
+    "section": "5G",
+    "dob": "03-02-2005",
+    "credentialId": "cJy7BlW0mUQGOn11EcG4Jg=="
+  },
+  {
+    "id": 4,
+    "name": "Syam Aravind",
+    "roll": "IOT35080",
+    "college": "PBR VITS College of Engineering",
+    "year": "3rd Year",
+    "branch": "CSE-IOT",
+    "section": "5G",
+    "dob": "17-08-2003",
+    "credentialId": "qQMjSXB0UEEYhcZnM+j7Fg=="
+  },
+  {
+    "id": 5,
+    "name": "Naveen",
+    "roll": "IOT35093",
+    "college": "PBR VITS College of Engineering",
+    "year": "3rd Year",
+    "branch": "CSE-IOT",
+    "section": "5G",
+    "dob": "29-01-2006",
+    "credentialId": "GqLZ9ZLQbZ/2er6+Z+POvw=="
+  },
+  {
+    "id": 6,
+    "name": "Mahesh",
+    "roll": "IOT35110",
+    "college": "PBR VITS College of Engineering",
+    "year": "3rd Year",
+    "branch": "CSE-IOT",
+    "section": "5G",
+    "dob": "09-09-2004",
+    "credentialId": "9z90QKgq+LA0rNAh5uNGTA=="
+  },
+  {
+    "id": 1791101678059,
+    "name": "mahesh",
+    "roll": "35110",
+    "college": "pbr vits",
+    "year": "3rd",
+    "branch": "cse-iot",
+    "section": "5g(2)",
+    "dob": "2006-04-12",
+    "credentialId": "SN3THKvQo3xuDTEHSQRrSZVIuao7ANMuYzzFvO0eFTI="
+  }
+]

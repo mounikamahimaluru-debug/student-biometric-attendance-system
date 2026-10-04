@@ -1,1557 +1,1424 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
+    <title>Student Biometric Attendance System</title>
 
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
 
-<title>Student Biometric Attendance System</title>
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e8f5e9, #e3f2fd);
+            color: #222;
+        }
 
-<!--
-<link rel="stylesheet" href="style.css">
--->
+        .container {
+            width: 95%;
+            max-width: 1000px;
+            margin: auto;
+            padding: 20px;
+        }
 
-<style>
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 25px;
+            margin-top: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
 
-* {
-  box-sizing: border-box;
-}
+        h1 {
+            text-align: center;
+            color: #176b45;
+            margin-bottom: 10px;
+        }
 
-body {
-  margin: 0;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  background: #f2f5f7;
-}
+        h2 {
+            color: #176b45;
+            margin-bottom: 20px;
+        }
 
-.card {
-  max-width: 700px;
-  margin: auto;
-  background: white;
-  padding: 30px;
-  border-radius: 18px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-}
+        h3 {
+            color: #176b45;
+            margin-bottom: 15px;
+        }
 
-h1 {
-  text-align: center;
-  margin-bottom: 10px;
-}
+        p {
+            margin: 8px 0;
+        }
 
-h2 {
-  margin-top: 20px;
-}
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin: 7px 0 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
 
-.subtitle {
-  text-align: center;
-  color: #666;
-  margin-bottom: 25px;
-}
+        button {
+            border: none;
+            border-radius: 9px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 15px;
+            margin: 5px;
+            background: #176b45;
+            color: white;
+        }
 
-input {
-  width: 100%;
-  padding: 13px;
-  margin: 8px 0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 15px;
-}
+        button:hover {
+            opacity: 0.9;
+        }
 
-.btn {
-  width: 100%;
-  padding: 13px;
-  margin-top: 12px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-}
+        .danger {
+            background: #d32f2f;
+        }
 
-.btn-primary {
-  background: #1976d2;
-  color: white;
-}
+        .secondary {
+            background: #555;
+        }
 
-.btn-primary:hover {
-  background: #125ca8;
-}
+        .blue {
+            background: #1976d2;
+        }
 
-.btn-danger {
-  background: #d32f2f;
-  color: white;
-}
+        .success {
+            color: green;
+            font-weight: bold;
+        }
 
-.warn {
-  background: #fff3cd;
-  padding: 12px;
-  border-radius: 8px;
-  margin: 15px 0;
-  color: #664d03;
-}
+        .error {
+            color: red;
+            font-weight: bold;
+        }
 
-#thumbBtn {
-  width: 100px;
-  height: 100px;
-  margin: 20px auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 45px;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  background: #1976d2;
-  color: white;
-}
+        .warning {
+            color: #d97706;
+            font-weight: bold;
+        }
 
-#statusText {
-  text-align: center;
-  margin: 15px 0;
-  font-weight: bold;
-}
+        .hidden {
+            display: none !important;
+        }
 
-.enroll-toggle {
-  margin-top: 25px;
-  padding: 12px;
-  background: #eeeeee;
-  border-radius: 8px;
-  cursor: pointer;
-  text-align: center;
-}
+        .center {
+            text-align: center;
+        }
 
-.enroll-list {
-  display: none;
-  margin-top: 10px;
-}
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px 15px;
+        }
 
-.enroll-list.show {
-  display: block;
-}
+        .form-group {
+            width: 100%;
+        }
 
-.enroll-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  padding: 12px;
-  margin: 8px 0;
-  background: #f5f5f5;
-  border-radius: 8px;
-}
+        .student-item {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            background: #fafafa;
+        }
 
-.enroll-row button {
-  padding: 8px 12px;
-  border: none;
-  border-radius: 6px;
-  background: #1976d2;
-  color: white;
-  cursor: pointer;
-}
+        .student-item button {
+            font-size: 13px;
+            padding: 8px 12px;
+        }
 
-.tag-done {
-  color: green;
-  font-weight: bold;
-}
+        .details {
+            background: #f5fdf8;
+            border: 1px solid #c8e6d5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
 
-.row {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px;
-  margin: 6px 0;
-  background: #f5f5f5;
-  border-radius: 7px;
-}
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+            gap: 20px;
+        }
 
-.error-icon {
-  text-align: center;
-  font-size: 50px;
-  color: red;
-}
+        .detail-row strong {
+            color: #176b45;
+        }
 
-#loginError {
-  color: red;
-  text-align: center;
-  margin: 10px 0;
-}
+        #statusText {
+            margin: 15px 0;
+            font-size: 16px;
+            text-align: center;
+        }
 
-#studentMessage {
-  text-align: center;
-  margin-top: 12px;
-  font-weight: bold;
-}
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
 
-.student-form {
-  margin-top: 25px;
-  padding: 20px;
-  background: #f8fafc;
-  border-radius: 12px;
-  border: 1px solid #ddd;
-}
+        @media(max-width: 700px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
 
-.student-form h2 {
-  text-align: center;
-  margin-top: 0;
-}
-
-.form-label {
-  display: block;
-  margin-top: 10px;
-  font-weight: bold;
-}
-
-</style>
-
+            .detail-row {
+                flex-direction: column;
+                gap: 3px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
+<div class="container">
 
-<div class="card">
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="card">
 
+        <h1>College Attendance Portal</h1>
 
-  <!-- ========================================= -->
-  <!-- LOGIN -->
-  <!-- ========================================= -->
+        <p class="center">
+            Student Biometric Attendance System
+        </p>
 
-  <div id="loginScreen">
+        <br>
 
-    <h1>🎓 College Attendance Portal</h1>
+        <h2>Admin Login</h2>
 
-    <p class="subtitle">
-      Login to continue to biometric verification
-    </p>
+        <input
+            type="text"
+            id="username"
+            placeholder="Username"
+        >
 
-    <input
-      type="text"
-      id="loginUser"
-      placeholder="Username (e.g. admin)"
-    >
+        <input
+            type="password"
+            id="password"
+            placeholder="Password"
+        >
 
-    <input
-      type="password"
-      id="loginPass"
-      placeholder="Password"
-    >
+        <div class="center">
+            <button onclick="doLogin()">
+                Login
+            </button>
+        </div>
 
-    <div id="loginError"></div>
-
-    <button
-      class="btn btn-primary"
-      onclick="doLogin()"
-    >
-      Login
-    </button>
-
-  </div>
-
-
-  <!-- ========================================= -->
-  <!-- FINGERPRINT SCREEN -->
-  <!-- ========================================= -->
-
-  <div
-    id="fingerprintScreen"
-    style="display:none;"
-  >
-
-    <h1>🔒 Fingerprint Verification</h1>
-
-    <p class="subtitle">
-      Uses your device's real fingerprint sensor (WebAuthn)
-    </p>
-
-
-    <div class="warn">
-
-      ⚠ This page must run through
-      <b>http://localhost:3000</b>.
-
-      Your laptop must have Windows Hello
-      fingerprint configured.
+        <p id="loginMessage" class="error center"></p>
 
     </div>
 
 
-    <button
-      id="thumbBtn"
-      onclick="scanFingerprint()"
-    >
-      👆
-    </button>
+    <!-- FINGERPRINT SCREEN -->
+    <div id="fingerprintScreen" class="card hidden">
+
+        <div class="top-bar">
+
+            <div>
+                <h1>Student Biometric Attendance</h1>
+                <p>
+                    Verify your fingerprint to mark attendance.
+                </p>
+            </div>
+
+            <button
+                class="danger"
+                onclick="logout()"
+            >
+                Logout
+            </button>
+
+        </div>
+
+        <hr><br>
+
+        <div class="center">
+
+            <p class="warning">
+                🔐 Use your device fingerprint / Windows Hello.
+            </p>
+
+            <p>
+                The biometric verification works on supported
+                devices and browsers.
+            </p>
+
+            <br>
+
+            <button
+                id="thumbBtn"
+                onclick="scanFingerprint()"
+            >
+                👆 Scan Fingerprint
+            </button>
+
+            <p id="statusText"></p>
+
+        </div>
 
 
-    <div id="statusText">
-      Tap to scan a real fingerprint
+        <!-- ADD STUDENT -->
+        <div class="card">
+
+            <h2>➕ Add New Student</h2>
+
+            <p>
+                Enter student details here. No code changes are required.
+            </p>
+
+            <br>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Student ID</label>
+                    <input
+                        type="number"
+                        id="studentId"
+                        placeholder="Enter ID"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Student Name</label>
+                    <input
+                        type="text"
+                        id="studentNameInput"
+                        placeholder="Enter name"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Roll Number</label>
+                    <input
+                        type="text"
+                        id="studentRoll"
+                        placeholder="Enter roll number"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>College</label>
+                    <input
+                        type="text"
+                        id="studentCollege"
+                        placeholder="Enter college"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Year</label>
+                    <input
+                        type="text"
+                        id="studentYear"
+                        placeholder="Example: 3rd Year"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Branch</label>
+                    <input
+                        type="text"
+                        id="studentBranch"
+                        placeholder="Example: CSE-IoT"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Section</label>
+                    <input
+                        type="text"
+                        id="studentSection"
+                        placeholder="Example: A"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <input
+                        type="date"
+                        id="studentDob"
+                    >
+                </div>
+
+            </div>
+
+            <div class="center">
+
+                <button onclick="addStudent()">
+                    Save Student
+                </button>
+
+                <button
+                    class="secondary"
+                    onclick="clearStudentForm()"
+                >
+                    Clear
+                </button>
+
+            </div>
+
+            <p
+                id="addStudentMessage"
+                class="center"
+            ></p>
+
+        </div>
+
+
+        <!-- ENROLLMENT -->
+        <div class="card">
+
+            <h2>👆 Fingerprint Enrollment</h2>
+
+            <p>
+                Select a student and register the device fingerprint.
+            </p>
+
+            <div id="enrollList">
+                Loading students...
+            </div>
+
+        </div>
+
+
+        <!-- STUDENT DETAILS -->
+        <div
+            id="detailsScreen"
+            class="details hidden"
+        >
+
+            <h2>Student Details</h2>
+
+            <div class="detail-row">
+                <strong>Name</strong>
+                <span id="studentName">-</span>
+            </div>
+
+            <div class="detail-row">
+                <strong>Roll Number</strong>
+                <span id="studentRollDisplay">-</span>
+            </div>
+
+            <div class="detail-row">
+                <strong>College</strong>
+                <span id="studentCollegeDisplay">-</span>
+            </div>
+
+            <div class="detail-row">
+                <strong>Year</strong>
+                <span id="studentYearDisplay">-</span>
+            </div>
+
+            <div class="detail-row">
+                <strong>Branch</strong>
+                <span id="studentBranchDisplay">-</span>
+            </div>
+
+            <div class="detail-row">
+                <strong>Section</strong>
+                <span id="studentSectionDisplay">-</span>
+            </div>
+
+            <div class="detail-row">
+                <strong>Date of Birth</strong>
+                <span id="studentDobDisplay">-</span>
+            </div>
+
+        </div>
+
     </div>
 
 
-    <!-- ========================================= -->
-    <!-- ADMIN ENROLLMENT -->
-    <!-- ========================================= -->
-
+    <!-- ERROR SCREEN -->
     <div
-      class="enroll-toggle"
-      onclick="toggleEnroll()"
-    >
-      Admin: show / hide student enrollment
-    </div>
-
-
-    <div
-      class="enroll-list"
-      id="enrollList"
-    ></div>
-
-
-    <!-- ========================================= -->
-    <!-- ⭐ ADD STUDENT FORM -->
-    <!-- ========================================= -->
-
-    <div
-      id="studentForm"
-      class="student-form"
+        id="errorScreen"
+        class="card hidden"
     >
 
-      <h2>➕ Add Student</h2>
+        <h2 class="error">
+            ❌ Verification Failed
+        </h2>
 
-      <p class="subtitle">
-        Enter student details below
-      </p>
+        <p id="errorMessage"></p>
 
+        <div class="center">
 
-      <label class="form-label">
-        Student Name
-      </label>
+            <button onclick="resetScan()">
+                Try Again
+            </button>
 
-      <input
-        type="text"
-        id="studentName"
-        placeholder="Enter student name"
-      >
-
-
-      <label class="form-label">
-        Roll Number
-      </label>
-
-      <input
-        type="text"
-        id="studentRoll"
-        placeholder="Enter roll number"
-      >
-
-
-      <label class="form-label">
-        College
-      </label>
-
-      <input
-        type="text"
-        id="studentCollege"
-        placeholder="Enter college name"
-      >
-
-
-      <label class="form-label">
-        Year
-      </label>
-
-      <input
-        type="text"
-        id="studentYear"
-        placeholder="Example: 3rd Year"
-      >
-
-
-      <label class="form-label">
-        Branch
-      </label>
-
-      <input
-        type="text"
-        id="studentBranch"
-        placeholder="Example: CSE / IOT"
-      >
-
-
-      <label class="form-label">
-        Section
-      </label>
-
-      <input
-        type="text"
-        id="studentSection"
-        placeholder="Example: A"
-      >
-
-
-      <label class="form-label">
-        Date of Birth
-      </label>
-
-      <input
-        type="date"
-        id="studentDob"
-      >
-
-
-      <button
-        class="btn btn-primary"
-        onclick="addStudent()"
-      >
-        💾 Save Student
-      </button>
-
-
-      <p id="studentMessage"></p>
+        </div>
 
     </div>
-
-
-    <!-- ========================================= -->
-    <!-- STUDENT DETAILS AFTER FINGERPRINT MATCH -->
-    <!-- ========================================= -->
-
-    <div
-      id="detailsScreen"
-      style="display:none;"
-    >
-
-      <h2>✅ Fingerprint Matched</h2>
-
-
-      <div class="row">
-
-        <span>Name</span>
-
-        <span id="d_name"></span>
-
-      </div>
-
-
-      <div class="row">
-
-        <span>Roll No</span>
-
-        <span id="d_roll"></span>
-
-      </div>
-
-
-      <div class="row">
-
-        <span>College</span>
-
-        <span id="d_college"></span>
-
-      </div>
-
-
-      <div class="row">
-
-        <span>Year</span>
-
-        <span id="d_year"></span>
-
-      </div>
-
-
-      <div class="row">
-
-        <span>Branch</span>
-
-        <span id="d_branch"></span>
-
-      </div>
-
-
-      <div class="row">
-
-        <span>Section</span>
-
-        <span id="d_section"></span>
-
-      </div>
-
-
-      <div class="row">
-
-        <span>Date of Birth</span>
-
-        <span id="d_dob"></span>
-
-      </div>
-
-
-      <button
-        class="btn btn-primary"
-        onclick="resetScan()"
-      >
-        Scan Next Student
-      </button>
-
-    </div>
-
-
-    <!-- ========================================= -->
-    <!-- ERROR -->
-    <!-- ========================================= -->
-
-    <div
-      id="errorScreen"
-      style="display:none;"
-    >
-
-      <div class="error-icon">
-        ✖
-      </div>
-
-
-      <h2>
-        Fingerprint Not Matched
-      </h2>
-
-
-      <p>
-        This fingerprint is not enrolled in the system.
-        Please try again or enroll first.
-      </p>
-
-
-      <button
-        class="btn btn-danger"
-        onclick="resetScan()"
-      >
-        Try Again
-      </button>
-
-    </div>
-
-
-    <!-- ========================================= -->
-    <!-- LOGOUT -->
-    <!-- ========================================= -->
-
-    <button
-      class="btn btn-danger"
-      onclick="logout()"
-      style="margin-top:20px;"
-    >
-      Logout
-    </button>
-
-  </div>
 
 </div>
 
 
 <script>
 
-
-// =====================================================
-// LOGIN
-// =====================================================
+/* =========================================================
+   LOGIN
+========================================================= */
 
 async function doLogin() {
 
-  const user =
-    document.getElementById("loginUser").value.trim();
+    const username =
+        document.getElementById("username").value.trim();
 
-  const pass =
-    document.getElementById("loginPass").value.trim();
+    const password =
+        document.getElementById("password").value.trim();
 
+    const message =
+        document.getElementById("loginMessage");
 
-  if (!user || !pass) {
+    if (!username || !password) {
 
-    document.getElementById("loginError").textContent =
-      "Please enter username and password.";
+        message.textContent =
+            "Please enter username and password.";
 
-    return;
-  }
-
-
-  try {
-
-    const response =
-      await fetch("/login", {
-
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify({
-
-          username: user,
-          password: pass
-
-        })
-
-      });
-
-
-    const data =
-      await response.json();
-
-
-    if (response.ok && data.success) {
-
-      document.getElementById(
-        "loginScreen"
-      ).style.display = "none";
-
-
-      document.getElementById(
-        "fingerprintScreen"
-      ).style.display = "block";
-
-
-      document.getElementById(
-        "loginError"
-      ).textContent = "";
-
-
-      loadStudents();
-
-    } else {
-
-      document.getElementById(
-        "loginError"
-      ).textContent =
-        data.message ||
-        "Invalid username or password";
-
+        return;
     }
 
-  } catch (error) {
+    try {
 
-    console.error(error);
+        const response = await fetch("/login", {
 
-    document.getElementById(
-      "loginError"
-    ).textContent =
-      "Backend server is not running.";
+            method: "POST",
 
-  }
+            headers: {
+                "Content-Type": "application/json"
+            },
 
+            body: JSON.stringify({
+                username: username,
+                password: password
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+
+            document
+                .getElementById("loginScreen")
+                .classList.add("hidden");
+
+            document
+                .getElementById("fingerprintScreen")
+                .classList.remove("hidden");
+
+            loadStudents();
+
+        } else {
+
+            message.textContent =
+                data.message || "Invalid login.";
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+            "Unable to connect to server.";
+
+    }
 }
 
 
-// =====================================================
-// LOGOUT
-// =====================================================
+/* =========================================================
+   LOGOUT
+========================================================= */
 
 function logout() {
 
-  document.getElementById(
-    "fingerprintScreen"
-  ).style.display = "none";
+    document
+        .getElementById("fingerprintScreen")
+        .classList.add("hidden");
 
+    document
+        .getElementById("errorScreen")
+        .classList.add("hidden");
 
-  document.getElementById(
-    "loginScreen"
-  ).style.display = "block";
+    document
+        .getElementById("loginScreen")
+        .classList.remove("hidden");
 
+    document.getElementById("username").value = "";
+    document.getElementById("password").value = "";
 
-  document.getElementById(
-    "loginUser"
-  ).value = "";
-
-
-  document.getElementById(
-    "loginPass"
-  ).value = "";
-
-
-  document.getElementById(
-    "loginError"
-  ).textContent = "";
-
-
-  resetScan();
-
+    resetScan();
 }
 
 
-// =====================================================
-// STUDENT DATA
-// =====================================================
-
-let students = [];
-
+/* =========================================================
+   LOAD STUDENTS
+========================================================= */
 
 async function loadStudents() {
 
-  try {
+    try {
 
-    const response =
-      await fetch("/students");
+        const response =
+            await fetch("/students");
 
+        const students =
+            await response.json();
 
-    if (!response.ok) {
+        renderEnrollList(students);
 
-      throw new Error(
-        "Failed to load students"
-      );
+    } catch (error) {
 
+        console.error(error);
+
+        document.getElementById("enrollList").innerHTML =
+            "<p class='error'>Failed to load students.</p>";
     }
-
-
-    students =
-      await response.json();
-
-
-    console.log(
-      "Students loaded from backend:",
-      students
-    );
-
-
-    renderEnrollList();
-
-
-  } catch (error) {
-
-    console.error(
-      "Student loading error:",
-      error
-    );
-
-
-    document.getElementById(
-      "statusText"
-    ).textContent =
-      "Unable to load students from backend.";
-
-  }
-
 }
 
 
-// =====================================================
-// ⭐ ADD STUDENT
-// =====================================================
+/* =========================================================
+   ADD STUDENT
+========================================================= */
 
 async function addStudent() {
 
-  const name =
-    document.getElementById(
-      "studentName"
-    ).value.trim();
+    const id =
+        document.getElementById("studentId").value.trim();
+
+    const name =
+        document.getElementById("studentNameInput").value.trim();
+
+    const roll =
+        document.getElementById("studentRoll").value.trim();
+
+    const college =
+        document.getElementById("studentCollege").value.trim();
+
+    const year =
+        document.getElementById("studentYear").value.trim();
+
+    const branch =
+        document.getElementById("studentBranch").value.trim();
+
+    const section =
+        document.getElementById("studentSection").value.trim();
+
+    const dob =
+        document.getElementById("studentDob").value;
+
+    const message =
+        document.getElementById("addStudentMessage");
 
 
-  const roll =
-    document.getElementById(
-      "studentRoll"
-    ).value.trim();
+    if (
+        !id ||
+        !name ||
+        !roll ||
+        !college ||
+        !year ||
+        !branch ||
+        !section ||
+        !dob
+    ) {
 
+        message.textContent =
+            "Please fill all student details.";
 
-  const college =
-    document.getElementById(
-      "studentCollege"
-    ).value.trim();
+        message.className =
+            "error center";
 
-
-  const year =
-    document.getElementById(
-      "studentYear"
-    ).value.trim();
-
-
-  const branch =
-    document.getElementById(
-      "studentBranch"
-    ).value.trim();
-
-
-  const section =
-    document.getElementById(
-      "studentSection"
-    ).value.trim();
-
-
-  const dob =
-    document.getElementById(
-      "studentDob"
-    ).value;
-
-
-  const message =
-    document.getElementById(
-      "studentMessage"
-    );
-
-
-  // Check required fields
-
-  if (
-    !name ||
-    !roll ||
-    !college ||
-    !year ||
-    !branch ||
-    !section ||
-    !dob
-  ) {
-
-    message.textContent =
-      "⚠ Please fill all student details.";
-
-    message.style.color = "red";
-
-    return;
-
-  }
-
-
-  try {
-
-    const response =
-      await fetch("/students", {
-
-        method: "POST",
-
-        headers: {
-
-          "Content-Type":
-            "application/json"
-
-        },
-
-        body: JSON.stringify({
-
-          name: name,
-          roll: roll,
-          college: college,
-          year: year,
-          branch: branch,
-          section: section,
-          dob: dob
-
-        })
-
-      });
-
-
-    const data =
-      await response.json();
-
-
-    if (!response.ok) {
-
-      throw new Error(
-        data.message ||
-        "Failed to save student"
-      );
-
+        return;
     }
 
 
-    message.textContent =
-      "✅ Student added successfully!";
+    try {
 
-    message.style.color = "green";
+        const response = await fetch("/students", {
 
+            method: "POST",
 
-    // Clear form
+            headers: {
+                "Content-Type": "application/json"
+            },
 
-    document.getElementById(
-      "studentName"
-    ).value = "";
+            body: JSON.stringify({
 
+                id: Number(id),
+                name: name,
+                roll: roll,
+                college: college,
+                year: year,
+                branch: branch,
+                section: section,
+                dob: dob
 
-    document.getElementById(
-      "studentRoll"
-    ).value = "";
-
-
-    document.getElementById(
-      "studentCollege"
-    ).value = "";
-
-
-    document.getElementById(
-      "studentYear"
-    ).value = "";
+            })
+        });
 
 
-    document.getElementById(
-      "studentBranch"
-    ).value = "";
+        const data =
+            await response.json();
 
 
-    document.getElementById(
-      "studentSection"
-    ).value = "";
+        if (response.ok) {
+
+            message.textContent =
+                "✅ Student added successfully.";
+
+            message.className =
+                "success center";
+
+            clearStudentForm();
+
+            loadStudents();
+
+        } else {
+
+            message.textContent =
+                data.message ||
+                "Failed to add student.";
+
+            message.className =
+                "error center";
+        }
 
 
-    document.getElementById(
-      "studentDob"
-    ).value = "";
+    } catch (error) {
 
+        console.error(error);
 
-    // Reload student list
+        message.textContent =
+            "Server connection failed.";
 
-    await loadStudents();
-
-
-  } catch (error) {
-
-    console.error(
-      "Add student error:",
-      error
-    );
-
-
-    message.textContent =
-      "❌ " + error.message;
-
-    message.style.color = "red";
-
-  }
-  }
-
-
-// =====================================================
-// ENROLLMENT LIST
-// =====================================================
-
-function toggleEnroll() {
-
-  document
-    .getElementById("enrollList")
-    .classList.toggle("show");
-
+        message.className =
+            "error center";
+    }
 }
 
 
-function renderEnrollList() {
+/* =========================================================
+   CLEAR FORM
+========================================================= */
 
-  const list =
-    document.getElementById(
-      "enrollList"
-    );
+function clearStudentForm() {
 
-
-  list.innerHTML = "";
-
-
-  if (students.length === 0) {
-
-    list.innerHTML =
-      "<p>No students found.</p>";
-
-    return;
-
-  }
-
-
-  students.forEach(student => {
-
-    const row =
-      document.createElement(
-        "div"
-      );
-
-
-    row.className =
-      "enroll-row";
-
-
-    row.innerHTML = `
-
-      <span>
-        ${student.name}
-        (${student.roll})
-      </span>
-
-      ${
-        student.credentialId
-
-        ?
-
-        `<span class="tag-done">
-          ✓ Enrolled
-        </span>`
-
-        :
-
-        `<button
-          onclick="enrollStudent(${student.id})"
-        >
-          Enroll Fingerprint
-        </button>`
-      }
-
-    `;
-
-
-    list.appendChild(row);
-
-  });
-
+    document.getElementById("studentId").value = "";
+    document.getElementById("studentNameInput").value = "";
+    document.getElementById("studentRoll").value = "";
+    document.getElementById("studentCollege").value = "";
+    document.getElementById("studentYear").value = "";
+    document.getElementById("studentBranch").value = "";
+    document.getElementById("studentSection").value = "";
+    document.getElementById("studentDob").value = "";
 }
 
 
-// =====================================================
-// BASE64 FUNCTIONS
-// =====================================================
+/* =========================================================
+   RENDER ENROLLMENT LIST
+========================================================= */
 
-function bufToBase64(buffer) {
+function renderEnrollList(students) {
 
-  return btoa(
-    String.fromCharCode(
-      ...new Uint8Array(buffer)
-    )
-  );
+    const list =
+        document.getElementById("enrollList");
 
+    if (!students || students.length === 0) {
+
+        list.innerHTML =
+            "<p>No students found.</p>";
+
+        return;
+    }
+
+
+    list.innerHTML = "";
+
+
+    students.forEach(student => {
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "student-item";
+
+
+        const enrolled =
+            student.credentialId
+                ? "✅ Fingerprint registered"
+                : "❌ Fingerprint not registered";
+
+
+        div.innerHTML = `
+
+            <strong>${escapeHTML(student.name)}</strong>
+
+            <p>
+                Roll: ${escapeHTML(student.roll)}
+            </p>
+
+            <p>
+                ${enrolled}
+            </p>
+
+            <button
+                onclick="enrollStudent(${student.id})"
+            >
+                Register Fingerprint
+            </button>
+
+        `;
+
+
+        list.appendChild(div);
+
+    });
 }
 
 
-function base64ToBuf(base64) {
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
 
-  return Uint8Array.from(
-    atob(base64),
-    character =>
-      character.charCodeAt(0)
-  );
+function escapeHTML(value) {
 
+    if (value === undefined || value === null) {
+        return "";
+    }
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
+
+/* =========================================================
+   RANDOM BYTES
+========================================================= */
 
 function randomBytes(length) {
 
-  return crypto.getRandomValues(
-    new Uint8Array(length)
-  );
+    const bytes =
+        new Uint8Array(length);
 
+    crypto.getRandomValues(bytes);
+
+    return bytes;
 }
 
 
-// =====================================================
-// FINGERPRINT ENROLLMENT
-// =====================================================
+/* =========================================================
+   ARRAY BUFFER TO BASE64
+========================================================= */
+
+function bufToBase64(buffer) {
+
+    const bytes =
+        new Uint8Array(buffer);
+
+    let binary = "";
+
+    bytes.forEach(byte => {
+
+        binary += String.fromCharCode(byte);
+
+    });
+
+    return btoa(binary);
+}
+
+
+/* =========================================================
+   BASE64 TO ARRAY BUFFER
+========================================================= */
+
+function base64ToBuf(base64) {
+
+    const binary =
+        atob(base64);
+
+    const bytes =
+        new Uint8Array(binary.length);
+
+    for (let i = 0; i < binary.length; i++) {
+
+        bytes[i] =
+            binary.charCodeAt(i);
+
+    }
+
+    return bytes.buffer;
+}
+
+
+/* =========================================================
+   FINGERPRINT ENROLLMENT
+========================================================= */
 
 async function enrollStudent(studentId) {
 
-  const student =
-    students.find(
-      s =>
-        String(s.id) ===
-        String(studentId)
-    );
+    try {
 
+        if (!window.PublicKeyCredential) {
 
-  if (!student) {
+            alert(
+                "This browser does not support fingerprint authentication."
+            );
 
-    alert("Student not found.");
-
-    return;
-
-  }
-
-
-  document.getElementById(
-    "statusText"
-  ).textContent =
-    `Place finger for ${student.name}...`;
-
-
-  try {
-
-    const credential =
-      await navigator.credentials.create({
-
-        publicKey: {
-
-          challenge:
-            randomBytes(32),
-
-
-          rp: {
-
-            name:
-              "College Fingerprint Attendance"
-
-          },
-
-
-          user: {
-
-            id:
-              randomBytes(16),
-
-            name:
-              student.roll,
-
-            displayName:
-              student.name
-
-          },
-
-
-          pubKeyCredParams: [
-
-            {
-              type: "public-key",
-              alg: -7
-            },
-
-            {
-              type: "public-key",
-              alg: -257
-            }
-
-          ],
-
-
-          authenticatorSelection: {
-
-            authenticatorAttachment:
-              "platform",
-
-            userVerification:
-              "required",
-
-            residentKey:
-              "discouraged"
-
-          },
-
-
-          timeout: 60000
-
+            return;
         }
 
-      });
+
+        const studentsResponse =
+            await fetch("/students");
+
+        const students =
+            await studentsResponse.json();
 
 
-    const credentialId =
-      bufToBase64(
-        credential.rawId
-      );
+        const student =
+            students.find(
+                s => Number(s.id) === Number(studentId)
+            );
 
 
-    const response =
-      await fetch(
-        `/students/${student.id}/fingerprint`,
-        {
+        if (!student) {
 
-          method: "PUT",
+            alert("Student not found.");
 
-          headers: {
-
-            "Content-Type":
-              "application/json"
-
-          },
-
-          body: JSON.stringify({
-
-            credentialId:
-              credentialId
-
-          })
-
+            return;
         }
 
-      );
+
+        const challenge =
+            randomBytes(32);
 
 
-    const data =
-      await response.json();
+        const userId =
+            randomBytes(16);
 
 
-    if (!response.ok) {
+        const credential =
+            await navigator.credentials.create({
 
-      throw new Error(
-        data.message ||
-        "Failed to save fingerprint"
-      );
+                publicKey: {
 
-    }
+                    challenge: challenge,
 
+                    rp: {
+                        name: "Student Biometric Attendance System"
+                    },
 
-    student.credentialId =
-      credentialId;
+                    user: {
 
+                        id: userId,
 
-    renderEnrollList();
+                        name:
+                            student.roll,
 
+                        displayName:
+                            student.name
+                    },
 
-    document.getElementById(
-      "statusText"
-    ).textContent =
-      `${student.name} enrolled successfully!`;
+                    pubKeyCredParams: [
 
+                        {
+                            type: "public-key",
+                            alg: -7
+                        },
 
-  } catch (error) {
+                        {
+                            type: "public-key",
+                            alg: -257
+                        }
 
-    console.error(
-      "Enrollment error:",
-      error
-    );
+                    ],
 
+                    authenticatorSelection: {
 
-    document.getElementById(
-      "statusText"
-    ).textContent =
-      `Enrollment failed: ${error.message}`;
+                        authenticatorAttachment:
+                            "platform",
 
-  }
+                        userVerification:
+                            "required"
+                    },
 
-}
+                    timeout: 60000,
 
+                    attestation:
+                        "none"
+                }
 
-// =====================================================
-// FINGERPRINT SCAN
-// =====================================================
-
-async function scanFingerprint() {
-
-  const enrolled =
-    students.filter(
-      student =>
-        student.credentialId
-    );
-
-
-  if (enrolled.length === 0) {
-
-    document.getElementById(
-      "statusText"
-    ).textContent =
-      "No students enrolled yet. Open Admin and enroll first.";
-
-    return;
-
-  }
+            });
 
 
-  document.getElementById(
-    "statusText"
-  ).textContent =
-    "Scanning... place your finger";
+        if (!credential) {
 
-
-  try {
-
-    const assertion =
-      await navigator.credentials.get({
-
-        publicKey: {
-
-          challenge:
-            randomBytes(32),
-
-
-          allowCredentials:
-
-            enrolled.map(
-              student => ({
-
-                id:
-                  base64ToBuf(
-                    student.credentialId
-                  ),
-
-                type:
-                  "public-key"
-
-              })
-            ),
-
-
-          userVerification:
-            "required",
-
-
-          timeout:
-            60000
-
+            throw new Error(
+                "Fingerprint registration cancelled."
+            );
         }
 
-      });
+
+        const credentialId =
+            bufToBase64(
+                credential.rawId
+            );
 
 
-    const matchedId =
-      bufToBase64(
-        assertion.rawId
-      );
+        const response =
+            await fetch(
+                "/students/" +
+                studentId +
+                "/fingerprint",
+                {
+
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        credentialId:
+                            credentialId
+                    })
+                }
+            );
 
 
-    const matchedStudent =
-      students.find(
-        student =>
-          student.credentialId ===
-          matchedId
-      );
+        const data =
+            await response.json();
 
 
-    if (matchedStudent) {
+        if (!response.ok) {
 
-      showDetails(
-        matchedStudent
-      );
-
-    } else {
-
-      showError();
-
-    }
+            throw new Error(
+                data.message ||
+                "Failed to save fingerprint."
+            );
+        }
 
 
-  } catch (error) {
-
-    console.error(
-      "Fingerprint error:",
-      error
-    );
-
-    showError();
-
-  }
-
-}
-
-
-// =====================================================
-// SHOW STUDENT DETAILS + ATTENDANCE
-// =====================================================
-
-function showDetails(matchedStudent) {
-
-  document.getElementById(
-    "thumbBtn"
-  ).style.display =
-    "none";
-
-
-  document.getElementById(
-    "statusText"
-  ).style.display =
-    "none";
-
-
-  document.getElementById(
-    "d_name"
-  ).textContent =
-    matchedStudent.name;
-
-
-  document.getElementById(
-    "d_roll"
-  ).textContent =
-    matchedStudent.roll;
-
-
-  document.getElementById(
-    "d_college"
-  ).textContent =
-    matchedStudent.college;
-
-
-  document.getElementById(
-    "d_year"
-  ).textContent =
-    matchedStudent.year;
-
-
-  document.getElementById(
-    "d_branch"
-  ).textContent =
-    matchedStudent.branch;
-
-
-  document.getElementById(
-    "d_section"
-  ).textContent =
-    matchedStudent.section;
-
-
-  document.getElementById(
-    "d_dob"
-  ).textContent =
-    matchedStudent.dob;
-
-
-  document.getElementById(
-    "detailsScreen"
-  ).style.display =
-    "block";
-
-
-  let dateTime =
-    new Date().toLocaleString();
-
-
-  fetch(
-    "/attendance",
-    {
-
-      method: "POST",
-
-      headers: {
-        "Content-Type":
-          "application/json"
-      },
-
-      body: JSON.stringify({
-
-        name:
-          matchedStudent.name,
-
-        roll:
-          matchedStudent.roll,
-
-        dateTime:
-          dateTime
-
-      })
-
-    }
-  )
-
-  .then(
-    function(res) {
-      return res.json();
-    }
-  )
-
-  .then(
-    function(response) {
-
-      let msg =
-        response.success
-
-        ?
-
-        "Attendance marked for " +
-        matchedStudent.name +
-        " at " +
-        dateTime
-
-        :
-
-        response.message +
-        " (Marked at " +
-        response.dateTime +
-        ")";
-
-
-      let note =
-        document.createElement(
-          "p"
+        alert(
+            "✅ Fingerprint registered successfully for " +
+            student.name
         );
 
 
-      note.textContent =
-        msg;
+        loadStudents();
 
 
-      note.style.marginTop =
-        "10px";
+    } catch (error) {
 
+        console.error(error);
 
-      document
-        .getElementById(
-          "detailsScreen"
-        )
-        .appendChild(note);
-
+        alert(
+            "Fingerprint registration failed: " +
+            error.message
+        );
     }
-  )
-
-  .catch(
-    function(err) {
-
-      console.error(
-        "Attendance save error:",
-        err
-      );
-
-    }
-  );
-
 }
 
 
-// =====================================================
-// ERROR
-// =====================================================
+/* =========================================================
+   FINGERPRINT SCAN
+========================================================= */
 
-function showError() {
+async function scanFingerprint() {
 
-  document.getElementById(
-    "thumbBtn"
-  ).style.display =
-    "none";
+    const button =
+        document.getElementById("thumbBtn");
 
-
-  document.getElementById(
-    "statusText"
-  ).style.display =
-    "none";
+    const status =
+        document.getElementById("statusText");
 
 
-  document.getElementById(
-    "errorScreen"
-  ).style.display =
-    "block";
+    button.disabled = true;
 
+    status.textContent =
+        "👆 Please verify your fingerprint...";
+
+    status.style.color =
+        "#1976d2";
+
+
+    try {
+
+        if (!window.PublicKeyCredential) {
+
+            throw new Error(
+                "Fingerprint authentication is not supported by this browser."
+            );
+        }
+
+
+        const response =
+            await fetch("/students");
+
+
+        const students =
+            await response.json();
+
+
+        const enrolledStudents =
+            students.filter(
+                student =>
+                    student.credentialId
+            );
+
+
+        if (enrolledStudents.length === 0) {
+
+            throw new Error(
+                "No fingerprint is registered yet."
+            );
+        }
+
+
+        const allowCredentials =
+            enrolledStudents.map(student => ({
+
+                type: "public-key",
+
+                id:
+                    base64ToBuf(
+                        student.credentialId
+                    )
+
+            }));
+
+
+        const challenge =
+            randomBytes(32);
+
+
+        const assertion =
+            await navigator.credentials.get({
+
+                publicKey: {
+
+                    challenge: challenge,
+
+                    allowCredentials:
+                        allowCredentials,
+
+                    userVerification:
+                        "required",
+
+                    timeout: 60000
+                }
+
+            });
+
+
+        if (!assertion) {
+
+            throw new Error(
+                "Fingerprint verification cancelled."
+            );
+        }
+
+
+        const scannedCredentialId =
+            bufToBase64(
+                assertion.rawId
+            );
+
+
+        const matchedStudent =
+            enrolledStudents.find(
+                student =>
+                    student.credentialId ===
+                    scannedCredentialId
+            );
+
+
+        if (!matchedStudent) {
+
+            throw new Error(
+                "Fingerprint does not match any registered student."
+            );
+        }
+
+
+        showDetails(
+            matchedStudent
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showError(
+            error.message ||
+            "Fingerprint verification failed."
+        );
+
+    } finally {
+
+        button.disabled = false;
+    }
 }
 
 
-// =====================================================
-// RESET
-// =====================================================
+/* =========================================================
+   SHOW STUDENT DETAILS + ATTENDANCE
+========================================================= */
+
+async function showDetails(matchedStudent) {
+
+    document
+        .getElementById("detailsScreen")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("studentName")
+        .textContent =
+        matchedStudent.name || "-";
+
+
+    document
+        .getElementById("studentRollDisplay")
+        .textContent =
+        matchedStudent.roll || "-";
+
+
+    document
+        .getElementById("studentCollegeDisplay")
+        .textContent =
+        matchedStudent.college || "-";
+
+
+    document
+        .getElementById("studentYearDisplay")
+        .textContent =
+        matchedStudent.year || "-";
+
+
+    document
+        .getElementById("studentBranchDisplay")
+        .textContent =
+        matchedStudent.branch || "-";
+
+
+    document
+        .getElementById("studentSectionDisplay")
+        .textContent =
+        matchedStudent.section || "-";
+
+
+    document
+        .getElementById("studentDobDisplay")
+        .textContent =
+        matchedStudent.dob || "-";
+
+
+    const status =
+        document.getElementById("statusText");
+
+
+    try {
+
+        const response =
+            await fetch("/attendance", {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/json"
+
+                },
+
+                body: JSON.stringify({
+
+                    name:
+                        matchedStudent.name,
+
+                    roll:
+                        matchedStudent.roll,
+
+                    dateTime:
+                        new Date().toLocaleString()
+
+                })
+
+            });
+
+
+        const data =
+            await response.json();
+
+
+        /*
+           IMPORTANT:
+           Backend already checks whether
+           today's attendance exists.
+        */
+
+        if (
+            data.success === false &&
+            data.message ===
+            "Attendance already marked today."
+        ) {
+
+            status.textContent =
+                "⚠️ Attendance already marked today.";
+
+            status.style.color =
+                "red";
+
+            return;
+        }
+
+
+        if (data.success === true) {
+
+            status.textContent =
+                "✅ Attendance marked successfully.";
+
+            status.style.color =
+                "green";
+
+            return;
+        }
+
+
+        status.textContent =
+            data.message ||
+            "❌ Unable to mark attendance.";
+
+        status.style.color =
+            "red";
+
+
+    } catch (error) {
+
+        console.error(
+            "Attendance error:",
+            error
+        );
+
+
+        status.textContent =
+            "❌ Failed to save attendance.";
+
+        status.style.color =
+            "red";
+    }
+}
+
+
+/* =========================================================
+   SHOW ERROR
+========================================================= */
+
+function showError(message) {
+
+    document
+        .getElementById("detailsScreen")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("errorScreen")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("errorMessage")
+        .textContent =
+        message;
+
+
+    const status =
+        document.getElementById("statusText");
+
+
+    status.textContent = "";
+}
+
+
+/* =========================================================
+   RESET SCAN
+========================================================= */
 
 function resetScan() {
 
-  document.getElementById(
-    "detailsScreen"
-  ).style.display =
-    "none";
+    document
+        .getElementById("errorScreen")
+        .classList.add("hidden");
 
 
-  document.getElementById(
-    "errorScreen"
-  ).style.display =
-    "none";
+    document
+        .getElementById("detailsScreen")
+        .classList.add("hidden");
 
 
-  document.getElementById(
-    "thumbBtn"
-  ).style.display =
-    "flex";
+    const button =
+        document.getElementById("thumbBtn");
 
 
-  document.getElementById(
-    "statusText"
-  ).style.display =
-    "block";
+    button.style.display =
+        "inline-block";
+
+    button.disabled =
+        false;
 
 
-  document.getElementById(
-    "statusText"
-  ).textContent =
-    "Tap to scan a real fingerprint";
+    const status =
+        document.getElementById("statusText");
 
+
+    status.textContent = "";
+
+    status.style.color =
+        "";
 }
 
 
-// =====================================================
-// START
-// =====================================================
+/* =========================================================
+   PAGE LOAD
+========================================================= */
 
-loadStudents();
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        console.log(
+            "Student Biometric Attendance System loaded."
+        );
+
+    }
+);
 
 </script>
 
-
 </body>
-
 </html>

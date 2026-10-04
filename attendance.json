@@ -1,0 +1,107 @@
+[
+  {
+    "name": "Hemalatha",
+    "studentId": "35079",
+    "dateTime": "8/20/2026, 12:10:08 AM"
+  },
+  {
+    "name": "pooji",
+    "studentId": "35080",
+    "dateTime": "8/20/2026, 12:22:51 AM"
+  },
+  {
+    "name": "pooji",
+    "studentId": "35089",
+    "dateTime": "8/20/2026, 12:23:30 AM"
+  },
+  {
+    "name": "hema",
+    "studentId": "49",
+    "dateTime": "8/20/2026, 12:30:31 AM"
+  },
+  {
+    "id": 1787382168890,
+    "studentId": 1,
+    "name": "Hema Latha",
+    "roll": "IOT35079",
+    "date": "2026-08-22",
+    "time": "12:32:48 PM",
+    "status": "Present"
+  },
+  {
+    "id": 1787382369461,
+    "studentId": 4,
+    "name": "Syam Aravind",
+    "roll": "IOT35080",
+    "date": "2026-08-22",
+    "time": "12:36:09 PM",
+    "status": "Present"
+  },
+  {
+    "name": "Hema Latha",
+    "roll": "IOT35079",
+    "dateTime": "8/22/2026, 2:14:46 PM"
+  },
+  {},
+  {},
+  {
+    "name": "Syam Aravind",
+    "roll": "IOT35080",
+    "dateTime": "8/22/2026, 2:22:20 PM"
+  },
+  {},
+  {},
+  {
+    "name": "Hema Latha",
+    "roll": "IOT35079",
+    "dateTime": "8/23/2026, 10:29:44 AM"
+  },
+  {},
+  {},
+  {},
+  {
+    "name": "Brahmaiah",
+    "roll": "IOT35035",
+    "dateTime": "8/23/2026, 12:03:33 PM"
+  },
+  {
+    "name": "Hema Latha",
+    "roll": "IOT35079",
+    "dateTime": "8/24/2026, 1:15:39 PM"
+  },
+  {
+    "name": "Syam Aravind",
+    "roll": "IOT35080",
+    "dateTime": "8/24/2026, 6:18:11 PM"
+  },
+  {
+    "name": "Hema Latha",
+    "roll": "IOT35079",
+    "dateTime": "01/10/2026, 14:20:07"
+  },
+  {
+    "name": "Hema",
+    "roll": "35079",
+    "dateTime": "10/3/2026, 6:50:40 PM"
+  },
+  {
+    "name": "Hema Latha",
+    "roll": "IOT35079",
+    "dateTime": "10/4/2026, 1:37:40 PM"
+  },
+  {
+    "name": "Brahmaiah",
+    "roll": "IOT35035",
+    "dateTime": "10/4/2026, 1:38:21 PM"
+  },
+  {
+    "name": "Hema",
+    "roll": "35079",
+    "dateTime": "10/4/2026, 1:40:47 PM"
+  },
+  {
+    "name": "mahesh",
+    "roll": "35110",
+    "dateTime": "10/4/2026, 1:53:54 PM"
+  }
+]
