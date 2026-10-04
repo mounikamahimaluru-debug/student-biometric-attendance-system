@@ -1,0 +1,231 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1f2937, #111827);
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.card {
+    background: #ffffff;
+    width: 400px;
+    max-width: 92vw;
+    border-radius: 16px;
+    padding: 32px 28px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+h1 {
+    text-align: center;
+    font-size: 22px;
+    margin: 0 0 6px;
+    color: #111827;
+}
+
+.subtitle {
+    text-align: center;
+    color: #6b7280;
+    font-size: 13px;
+    margin: 0 0 20px;
+}
+
+/* ---- Inputs & buttons ---- */
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #2563eb;
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 6px;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: #fff;
+}
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: #fff;
+}
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+#loginError {
+    color: #dc2626;
+    font-size: 13px;
+    min-height: 16px;
+    margin-bottom: 4px;
+}
+
+/* ---- Screen visibility ---- */
+#fingerprintScreen {
+    display: none;
+}
+
+.warn {
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    color: #92400e;
+    font-size: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 18px;
+}
+
+/* ---- Fingerprint button ---- */
+#thumbBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    margin: 10px auto;
+    border-radius: 50%;
+    border: 3px solid #2563eb;
+    background: #eff6ff;
+    font-size: 42px;
+    cursor: pointer;
+}
+#thumbBtn:hover {
+    background: #dbeafe;
+}
+
+#statusText {
+    text-align: center;
+    color: #374151;
+    font-size: 14px;
+    margin: 12px 0 20px;
+}
+
+/* ---- Admin enroll section ---- */
+.enroll-toggle {
+    text-align: center;
+    font-size: 12px;
+    color: #2563eb;
+    cursor: pointer;
+    margin-bottom: 6px;
+    text-decoration: underline;
+}
+
+.enroll-list {
+    display: none;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 16px;
+    max-height: 180px;
+    overflow-y: auto;
+}
+.enroll-list.show {
+    display: block;
+}
+
+.enroll-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 4px;
+    font-size: 13px;
+    border-bottom: 1px solid #eee;
+}
+.enroll-row:last-child {
+    border-bottom: none;
+}
+
+.enroll-row button {
+    background: #10b981;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+}
+.enroll-row button:hover {
+    background: #059669;
+}
+
+.tag-done {
+    color: #059669;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+/* ---- Details / Error screens ---- */
+#detailsScreen,
+#errorScreen {
+    display: none;
+    text-align: center;
+}
+
+#detailsScreen h2 {
+    color: #059669;
+    margin-bottom: 16px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 4px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+    text-align: left;
+}
+.row span:first-child {
+    color: #6b7280;
+    font-weight: 600;
+}
+.row span:last-child {
+    color: #111827;
+}
+
+.error-icon {
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 50%;
+    background: #fee2e2;
+    color: #dc2626;
+    font-size: 28px;
+    margin: 0 auto 12px;
+}
+
+#errorScreen h2 {
+    color: #dc2626;
+    margin: 0 0 8px;
+}
+
+#errorScreen p {
+    color: #6b7280;
+    font-size: 13px;
+    margin-bottom: 16px;
+}
