@@ -1,9 +1,12 @@
 const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
-require("dotenv").config();
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 
 // =====================================================
@@ -23,20 +26,43 @@ app.use(express.static(__dirname));
 const MONGO_URL = process.env.MONGO_URL;
 
 if (!MONGO_URL) {
-    console.error("❌ MONGO_URL is missing in .env file");
-    process.exit(1);
-}
 
-mongoose.connect(MONGO_URL)
-    .then(() => {
-        console.log("=========================================");
-        console.log("MongoDB connected successfully");
-        console.log("=========================================");
-    })
-    .catch((error) => {
-        console.error("❌ MongoDB connection failed:");
-        console.error(error.message);
-    });
+    console.error(
+        "❌ MONGO_URL is missing in .env file"
+    );
+
+} else {
+
+    mongoose
+        .connect(MONGO_URL)
+        .then(() => {
+
+            console.log(
+                "========================================="
+            );
+
+            console.log(
+                "✅ MongoDB connected successfully"
+            );
+
+            console.log(
+                "========================================="
+            );
+
+        })
+        .catch((error) => {
+
+            console.error(
+                "❌ MongoDB connection error:"
+            );
+
+            console.error(
+                error.message
+            );
+
+        });
+
+}
 
 
 // =====================================================
@@ -44,11 +70,13 @@ mongoose.connect(MONGO_URL)
 // =====================================================
 
 const studentSchema = new mongoose.Schema(
+
     {
+
         id: {
             type: Number,
-            unique: true,
-            required: true
+            required: true,
+            unique: true
         },
 
         name: {
@@ -66,289 +94,485 @@ const studentSchema = new mongoose.Schema(
 
         college: {
             type: String,
-            required: true,
+            default: "",
             trim: true
         },
 
         year: {
             type: String,
-            required: true,
+            default: "",
             trim: true
         },
 
         branch: {
             type: String,
-            required: true,
+            default: "",
             trim: true
         },
 
         section: {
             type: String,
-            required: true,
+            default: "",
             trim: true
         },
 
         dob: {
             type: String,
-            required: true
+            default: ""
         },
 
         credentialId: {
             type: String,
-            default: null
+            default: ""
         }
+
     },
+
     {
         timestamps: true
     }
+
 );
 
-const Student = mongoose.model("Student", studentSchema);
+
+const Student =
+    mongoose.model(
+        "Student",
+        studentSchema
+    );
 
 
 // =====================================================
 // ATTENDANCE SCHEMA
 // =====================================================
 
-const attendanceSchema = new mongoose.Schema(
-    {
-        name: {
-            type: String,
-            required: true
+const attendanceSchema =
+    new mongoose.Schema(
+
+        {
+
+            name: {
+                type: String,
+                required: true,
+                trim: true
+            },
+
+            roll: {
+                type: String,
+                required: true,
+                trim: true
+            },
+
+            dateTime: {
+                type: String,
+                required: true
+            },
+
+            attendanceDate: {
+                type: String,
+                required: true
+            },
+
+            attendanceTime: {
+                type: String,
+                required: true
+            }
+
         },
 
-        roll: {
-            type: String,
-            required: true
-        },
-
-        dateTime: {
-            type: String,
-            required: true
+        {
+            timestamps: true
         }
+
+    );
+
+
+// Prevent same roll number from being
+// marked twice on the same date.
+
+attendanceSchema.index(
+    {
+        roll: 1,
+        attendanceDate: 1
     },
     {
-        timestamps: true
+        unique: true
     }
 );
 
+
 const Attendance =
-    mongoose.model("Attendance", attendanceSchema);
+    mongoose.model(
+        "Attendance",
+        attendanceSchema
+    );
 
 
 // =====================================================
 // HOME PAGE
 // =====================================================
 
-app.get("/", (req, res) => {
+app.get(
+    "/",
+    (req, res) => {
 
-    res.sendFile(
-        path.join(__dirname, "index.html")
-    );
+        res.sendFile(
+            path.join(
+                __dirname,
+                "index.html"
+            )
+        );
 
-});
+    }
+);
 
 
 // =====================================================
 // LOGIN
 // =====================================================
 
-app.post("/login", (req, res) => {
+app.post(
+    "/login",
+    (req, res) => {
 
-    const {
-        username,
-        password
-    } = req.body;
+        try {
 
-    if (
-        username === "admin" &&
-        password === "1234"
-    ) {
-
-        return res.json({
-            success: true
-        });
-
-    }
-
-    return res.json({
-
-        success: false,
-
-        message:
-            "Invalid username or password"
-
-    });
-
-});
+            const {
+                username,
+                password
+            } = req.body;
 
 
-// =====================================================
-// STUDENTS - GET
-// =====================================================
+            if (
+                username === "admin" &&
+                password === "1234"
+            ) {
 
-app.get("/students", async (req, res) => {
+                return res.json({
 
-    try {
+                    success: true,
 
-        const students =
-            await Student.find()
-                .sort({ createdAt: 1 });
+                    message:
+                        "Login successful"
 
-        res.json(students);
+                });
 
-    } catch (error) {
-
-        console.error(error);
-
-        res.status(500).json({
-
-            success: false,
-
-            message:
-                "Failed to load students."
-
-        });
-
-    }
-
-});
+            }
 
 
-// =====================================================
-// STUDENTS - ADD
-// =====================================================
-
-app.post("/students", async (req, res) => {
-
-    try {
-
-        const {
-            name,
-            roll,
-            college,
-            year,
-            branch,
-            section,
-            dob
-        } = req.body;
-
-
-        // Check required fields
-
-        if (
-            !name ||
-            !roll ||
-            !college ||
-            !year ||
-            !branch ||
-            !section ||
-            !dob
-        ) {
-
-            return res.status(400).json({
+            return res.status(401).json({
 
                 success: false,
 
                 message:
-                    "Please fill all student details."
+                    "Invalid username or password"
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "Login error:",
+                error
+            );
+
+
+            return res.status(500).json({
+
+                success: false,
+
+                message:
+                    "Login failed"
 
             });
 
         }
 
-
-        // Check duplicate roll number
-
-        const existingStudent =
-            await Student.findOne({
-                roll: String(roll).trim()
-            });
+    }
+);
 
 
-        if (existingStudent) {
+// =====================================================
+// GET ALL STUDENTS
+// =====================================================
 
-            return res.status(400).json({
+app.get(
+    "/students",
+    async (req, res) => {
+
+        try {
+
+            const students =
+                await Student
+                    .find()
+                    .sort({
+                        createdAt: -1
+                    });
+
+
+            return res.json(
+                students
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Get students error:",
+                error
+            );
+
+
+            return res.status(500).json({
 
                 success: false,
 
                 message:
-                    "This Roll Number already exists."
+                    "Failed to get students"
 
             });
 
         }
 
+    }
+);
 
-        // Create student
 
-        const newStudent =
-            new Student({
+// =====================================================
+// ADD STUDENT
+// =====================================================
 
-                id: Date.now(),
+app.post(
+    "/students",
+    async (req, res) => {
 
-                name:
-                    String(name).trim(),
+        try {
 
-                roll:
-                    String(roll).trim(),
+            const {
+                id,
+                name,
+                roll,
+                college,
+                year,
+                branch,
+                section,
+                dob
+            } = req.body;
 
-                college:
-                    String(college).trim(),
 
-                year:
-                    String(year).trim(),
+            // Required fields
 
-                branch:
-                    String(branch).trim(),
+            if (
+                !name ||
+                !roll
+            ) {
 
-                section:
-                    String(section).trim(),
+                return res.status(400).json({
 
-                dob:
-                    dob,
+                    success: false,
 
-                credentialId:
-                    null
+                    message:
+                        "Student name and roll number are required."
+
+                });
+
+            }
+
+
+            const cleanName =
+                String(name).trim();
+
+
+            const cleanRoll =
+                String(roll).trim();
+
+
+            // Check duplicate roll
+
+            const existingStudent =
+                await Student.findOne({
+
+                    roll:
+                        cleanRoll
+
+                });
+
+
+            if (existingStudent) {
+
+                return res.status(409).json({
+
+                    success: false,
+
+                    message:
+                        "Student with this roll number already exists."
+
+                });
+
+            }
+
+
+            // Generate ID if not provided
+
+            let studentId;
+
+
+            if (id) {
+
+                studentId =
+                    Number(id);
+
+            } else {
+
+                studentId =
+                    Date.now();
+
+            }
+
+
+            // Check duplicate ID
+
+            const existingId =
+                await Student.findOne({
+
+                    id:
+                        studentId
+
+                });
+
+
+            if (existingId) {
+
+                studentId =
+                    Date.now();
+
+            }
+
+
+            // Create student
+
+            const student =
+                new Student({
+
+                    id:
+                        studentId,
+
+                    name:
+                        cleanName,
+
+                    roll:
+                        cleanRoll,
+
+                    college:
+                        college
+                            ? String(college).trim()
+                            : "",
+
+                    year:
+                        year
+                            ? String(year).trim()
+                            : "",
+
+                    branch:
+                        branch
+                            ? String(branch).trim()
+                            : "",
+
+                    section:
+                        section
+                            ? String(section).trim()
+                            : "",
+
+                    dob:
+                        dob || "",
+
+                    credentialId:
+                        ""
+
+                });
+
+
+            await student.save();
+
+
+            console.log(
+                "========================================="
+            );
+
+            console.log(
+                "Student added:"
+            );
+
+            console.log(
+                `Name: ${student.name}`
+            );
+
+            console.log(
+                `Roll: ${student.roll}`
+            );
+
+            console.log(
+                "========================================="
+            );
+
+
+            return res.json({
+
+                success: true,
+
+                message:
+                    "Student added successfully.",
+
+                student:
+                    student
 
             });
 
 
-        await newStudent.save();
+        } catch (error) {
+
+            console.error(
+                "Add student error:",
+                error
+            );
 
 
-        res.json({
+            // Duplicate MongoDB key
 
-            success: true,
+            if (
+                error.code === 11000
+            ) {
 
-            message:
-                "Student added successfully.",
+                return res.status(409).json({
 
-            student:
-                newStudent
+                    success: false,
 
-        });
+                    message:
+                        "Student ID or Roll Number already exists."
 
-    } catch (error) {
+                });
 
-        console.error(error);
+            }
 
-        res.status(500).json({
 
-            success: false,
+            return res.status(500).json({
 
-            message:
-                "Failed to add student."
+                success: false,
 
-        });
+                message:
+                    "Failed to add student."
+
+            });
+
+        }
 
     }
-
-});
+);
 
 
 // =====================================================
-// FINGERPRINT ENROLLMENT
+// UPDATE FINGERPRINT
 // =====================================================
 
 app.put(
@@ -358,7 +582,10 @@ app.put(
         try {
 
             const studentId =
-                req.params.id;
+                Number(
+                    req.params.id
+                );
+
 
             const {
                 credentialId
@@ -372,7 +599,7 @@ app.put(
                     success: false,
 
                     message:
-                        "Credential ID is required."
+                        "Credential ID is missing."
 
                 });
 
@@ -381,7 +608,10 @@ app.put(
 
             const student =
                 await Student.findOne({
-                    id: Number(studentId)
+
+                    id:
+                        studentId
+
                 });
 
 
@@ -400,26 +630,57 @@ app.put(
 
 
             student.credentialId =
-                credentialId;
+                String(
+                    credentialId
+                );
 
 
             await student.save();
 
 
-            res.json({
+            console.log(
+                "========================================="
+            );
+
+            console.log(
+                "Fingerprint registered:"
+            );
+
+            console.log(
+                `Name: ${student.name}`
+            );
+
+            console.log(
+                `Roll: ${student.roll}`
+            );
+
+            console.log(
+                "========================================="
+            );
+
+
+            return res.json({
 
                 success: true,
 
                 message:
-                    "Fingerprint enrolled successfully."
+                    "Fingerprint registered successfully.",
+
+                student:
+                    student
 
             });
 
+
         } catch (error) {
 
-            console.error(error);
+            console.error(
+                "Fingerprint update error:",
+                error
+            );
 
-            res.status(500).json({
+
+            return res.status(500).json({
 
                 success: false,
 
@@ -435,180 +696,570 @@ app.put(
 
 
 // =====================================================
-// ATTENDANCE - GET
+// GET ATTENDANCE RECORDS
 // =====================================================
 
-app.get("/attendance", async (req, res) => {
+app.get(
+    "/attendance",
+    async (req, res) => {
 
-    try {
+        try {
 
-        const records =
-            await Attendance.find()
-                .sort({ createdAt: -1 });
-
-        res.json(records);
-
-    } catch (error) {
-
-        console.error(error);
-
-        res.status(500).json({
-
-            success: false,
-
-            message:
-                "Failed to load attendance."
-
-        });
-
-    }
-
-});
+            const records =
+                await Attendance
+                    .find()
+                    .sort({
+                        createdAt: -1
+                    });
 
 
-// =====================================================
-// ATTENDANCE - MARK
-// =====================================================
-
-app.post("/attendance", async (req, res) => {
-
-    try {
-
-        const {
-            name,
-            roll,
-            dateTime
-        } = req.body;
+            return res.json(
+                records
+            );
 
 
-        if (!name || !roll || !dateTime) {
+        } catch (error) {
 
-            return res.status(400).json({
+            console.error(
+                "Get attendance error:",
+                error
+            );
+
+
+            return res.status(500).json({
 
                 success: false,
 
                 message:
-                    "Attendance details are missing."
+                    "Failed to get attendance records."
 
             });
 
         }
 
-
-        // Today's date
-
-        const today =
-            new Date()
-                .toLocaleDateString();
+    }
+);
 
 
-        // Get today's attendance
+// =====================================================
+// MARK ATTENDANCE
+// =====================================================
 
-        const records =
-            await Attendance.find({
-                roll: String(roll)
-            });
+app.post(
+    "/attendance",
+    async (req, res) => {
 
+        try {
 
-        const alreadyMarked =
-            records.find(record => {
-
-                return new Date(
-                    record.dateTime
-                ).toLocaleDateString() === today;
-
-            });
+            const {
+                name,
+                roll
+            } = req.body;
 
 
-        if (alreadyMarked) {
+            // -----------------------------------------
+            // CHECK DATA
+            // -----------------------------------------
+
+            if (
+                !name ||
+                !roll
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "Attendance details are missing."
+
+                });
+
+            }
+
+
+            const cleanName =
+                String(name).trim();
+
+
+            const cleanRoll =
+                String(roll).trim();
+
+
+            // -----------------------------------------
+            // CURRENT DATE/TIME
+            // INDIA TIMEZONE
+            // -----------------------------------------
+
+            const now =
+                new Date();
+
+
+            // -----------------------------------------
+            // INDIA DATE
+            // Example: 05/10/2026
+            // -----------------------------------------
+
+            const attendanceDate =
+                new Intl.DateTimeFormat(
+                    "en-IN",
+                    {
+
+                        timeZone:
+                            "Asia/Kolkata",
+
+                        day:
+                            "2-digit",
+
+                        month:
+                            "2-digit",
+
+                        year:
+                            "numeric"
+
+                    }
+                ).format(now);
+
+
+            // -----------------------------------------
+            // INDIA TIME
+            // Example: 10:30:45 AM
+            // -----------------------------------------
+
+            const attendanceTime =
+                new Intl.DateTimeFormat(
+                    "en-IN",
+                    {
+
+                        timeZone:
+                            "Asia/Kolkata",
+
+                        hour:
+                            "2-digit",
+
+                        minute:
+                            "2-digit",
+
+                        second:
+                            "2-digit",
+
+                        hour12:
+                            true
+
+                    }
+                ).format(now);
+
+
+            const dateTime =
+                `${attendanceDate}, ${attendanceTime}`;
+
+
+            console.log(
+                "========================================="
+            );
+
+            console.log(
+                "Attendance request received"
+            );
+
+            console.log(
+                `Name: ${cleanName}`
+            );
+
+            console.log(
+                `Roll: ${cleanRoll}`
+            );
+
+            console.log(
+                `Date: ${attendanceDate}`
+            );
+
+            console.log(
+                `Time: ${attendanceTime}`
+            );
+
+            console.log(
+                "========================================="
+            );
+
+
+            // -----------------------------------------
+            // CHECK ALREADY ATTENDED TODAY
+            // -----------------------------------------
+
+            const alreadyMarked =
+                await Attendance.findOne({
+
+                    roll:
+                        cleanRoll,
+
+                    attendanceDate:
+                        attendanceDate
+
+                });
+
+
+            if (alreadyMarked) {
+
+                console.log(
+                    `⚠️ Already attended: ${cleanName} | ${cleanRoll}`
+                );
+
+
+                return res.json({
+
+                    success: false,
+
+                    alreadyAttended:
+                        true,
+
+                    message:
+                        "Attendance already marked today.",
+
+                    dateTime:
+                        alreadyMarked.dateTime,
+
+                    attendanceDate:
+                        alreadyMarked.attendanceDate,
+
+                    attendanceTime:
+                        alreadyMarked.attendanceTime
+
+                });
+
+            }
+
+
+            // -----------------------------------------
+            // CREATE ATTENDANCE RECORD
+            // -----------------------------------------
+
+            const newAttendance =
+                new Attendance({
+
+                    name:
+                        cleanName,
+
+                    roll:
+                        cleanRoll,
+
+                    dateTime:
+                        dateTime,
+
+                    attendanceDate:
+                        attendanceDate,
+
+                    attendanceTime:
+                        attendanceTime
+
+                });
+
+
+            await newAttendance.save();
+
+
+            console.log(
+                "========================================="
+            );
+
+            console.log(
+                "✅ ATTENDANCE MARKED"
+            );
+
+            console.log(
+                `Name: ${cleanName}`
+            );
+
+            console.log(
+                `Roll: ${cleanRoll}`
+            );
+
+            console.log(
+                `Date: ${attendanceDate}`
+            );
+
+            console.log(
+                `Time: ${attendanceTime}`
+            );
+
+            console.log(
+                "========================================="
+            );
+
 
             return res.json({
 
+                success: true,
+
+                alreadyAttended:
+                    false,
+
+                message:
+                    "Attendance marked successfully.",
+
+                dateTime:
+                    dateTime,
+
+                attendanceDate:
+                    attendanceDate,
+
+                attendanceTime:
+                    attendanceTime
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "Attendance error:",
+                error
+            );
+
+
+            // -----------------------------------------
+            // DUPLICATE KEY PROTECTION
+            // -----------------------------------------
+
+            if (
+                error.code === 11000
+            ) {
+
+                try {
+
+                    const {
+                        roll
+                    } = req.body;
+
+
+                    const cleanRoll =
+                        String(
+                            roll
+                        ).trim();
+
+
+                    const now =
+                        new Date();
+
+
+                    const attendanceDate =
+                        new Intl.DateTimeFormat(
+                            "en-IN",
+                            {
+
+                                timeZone:
+                                    "Asia/Kolkata",
+
+                                day:
+                                    "2-digit",
+
+                                month:
+                                    "2-digit",
+
+                                year:
+                                    "numeric"
+
+                            }
+                        ).format(now);
+
+
+                    const existing =
+                        await Attendance.findOne({
+
+                            roll:
+                                cleanRoll,
+
+                            attendanceDate:
+                                attendanceDate
+
+                        });
+
+
+                    if (existing) {
+
+                        return res.json({
+
+                            success: false,
+
+                            alreadyAttended:
+                                true,
+
+                            message:
+                                "Attendance already marked today.",
+
+                            dateTime:
+                                existing.dateTime,
+
+                            attendanceDate:
+                                existing.attendanceDate,
+
+                            attendanceTime:
+                                existing.attendanceTime
+
+                        });
+
+                    }
+
+                } catch (
+                    duplicateError
+                ) {
+
+                    console.error(
+                        duplicateError
+                    );
+
+                }
+
+            }
+
+
+            return res.status(500).json({
+
                 success: false,
 
                 message:
-                    "Attendance already marked today.",
-
-                dateTime:
-                    alreadyMarked.dateTime
+                    "Failed to mark attendance."
 
             });
 
         }
 
+    }
+);
 
-        // Save attendance
 
-        const newAttendance =
-            new Attendance({
+// =====================================================
+// TODAY ATTENDANCE
+// =====================================================
 
-                name:
-                    name,
+app.get(
+    "/attendance/today",
+    async (req, res) => {
 
-                roll:
-                    roll,
+        try {
 
-                dateTime:
-                    dateTime
+            const now =
+                new Date();
+
+
+            const today =
+                new Intl.DateTimeFormat(
+                    "en-IN",
+                    {
+
+                        timeZone:
+                            "Asia/Kolkata",
+
+                        day:
+                            "2-digit",
+
+                        month:
+                            "2-digit",
+
+                        year:
+                            "numeric"
+
+                    }
+                ).format(now);
+
+
+            const records =
+                await Attendance
+                    .find({
+                        attendanceDate:
+                            today
+                    })
+                    .sort({
+                        createdAt: -1
+                    });
+
+
+            return res.json({
+
+                success: true,
+
+                date:
+                    today,
+
+                count:
+                    records.length,
+
+                records:
+                    records
 
             });
 
 
-        await newAttendance.save();
+        } catch (error) {
+
+            console.error(
+                "Today attendance error:",
+                error
+            );
 
 
-        res.json({
+            return res.status(500).json({
+
+                success: false,
+
+                message:
+                    "Failed to get today's attendance."
+
+            });
+
+        }
+
+    }
+);
+
+
+// =====================================================
+// API TEST
+// =====================================================
+
+app.get(
+    "/api/test",
+    (req, res) => {
+
+        return res.json({
 
             success: true,
 
             message:
-                "Attendance marked successfully."
+                "Student Biometric Attendance API is working.",
 
-        });
-
-    } catch (error) {
-
-        console.error(error);
-
-        res.status(500).json({
-
-            success: false,
-
-            message:
-                "Failed to mark attendance."
+            time:
+                new Date().toISOString()
 
         });
 
     }
-
-});
-
-
-// =====================================================
-// TEST API
-// =====================================================
-
-app.get("/api/test", (req, res) => {
-
-    res.json({
-
-        success: true,
-
-        message:
-            "Student Biometric Attendance backend is working with MongoDB."
-
-    });
-
-});
+);
 
 
 // =====================================================
-// SERVER
+// 404 HANDLER
 // =====================================================
 
-const PORT =
-    process.env.PORT || 3000;
+app.use(
+    (req, res) => {
 
+        res.status(404).json({
+
+            success: false,
+
+            message:
+                "API route not found."
+
+        });
+
+    }
+);
+
+
+// =====================================================
+// START SERVER
+// =====================================================
 
 app.listen(
     PORT,
@@ -633,7 +1284,6 @@ app.listen(
 
         console.log(
             "========================================="
-
         );
 
     }
