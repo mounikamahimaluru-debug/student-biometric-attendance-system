@@ -2357,6 +2357,10 @@ function createAttendanceSection() {
         document.getElementById(
             "fingerprintScreen"
         );
+       if (!fingerprintScreen) {
+    console.error("Fingerprint screen not found!");
+    return;
+} 
 
     section =
         document.createElement("div");
